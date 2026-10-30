@@ -33,7 +33,7 @@
 ### Claude Code (and Grok Build)
 
 ```
-/plugin marketplace add wonkylamp/gta-6
+/plugin marketplace add wonkylamp/gta-6-skill
 /plugin install gta-6@wonkylamp
 ```
 
@@ -42,7 +42,7 @@ Grok Build reads Claude Code plugins automatically, so that's both done.
 ### Everything else, in one line
 
 ```bash
-npx skills add wonkylamp/gta-6 -g
+npx skills add wonkylamp/gta-6-skill -g
 ```
 
 [`skills`](https://github.com/vercel-labs/skills) (Node 22.20+) detects your agents and installs to each one. Add `-a codex -a cursor` to pick specific ones.
@@ -50,7 +50,7 @@ npx skills add wonkylamp/gta-6 -g
 ### Or by hand
 
 ```bash
-git clone https://github.com/wonkylamp/gta-6 ~/.gta-6
+git clone https://github.com/wonkylamp/gta-6-skill ~/.gta-6
 ```
 
 Then copy `~/.gta-6/skills/gta-6` into your agent's skills folder:
@@ -62,8 +62,8 @@ Then copy `~/.gta-6/skills/gta-6` into your agent's skills folder:
 | OpenAI Codex | `~/.agents/skills/` | `$gta-6` |
 | Cursor | `~/.cursor/skills/` | `/gta-6` |
 | GitHub Copilot (VS Code, CLI) | `~/.copilot/skills/`, or `copilot skill add ~/.gta-6/skills/gta-6` | `/gta-6` |
-| Gemini CLI | `gemini skills install https://github.com/wonkylamp/gta-6 --path skills/gta-6` | "run gta-6" |
-| Amp | `amp skill add wonkylamp/gta-6 --global` | "run gta-6" |
+| Gemini CLI | `gemini skills install https://github.com/wonkylamp/gta-6-skill --path skills/gta-6` | "run gta-6" |
+| Amp | `amp skill add wonkylamp/gta-6-skill --global` | "run gta-6" |
 | OpenCode | `~/.config/opencode/skills/` | "run gta-6" |
 | Windsurf | `~/.codeium/windsurf/skills/` | `/gta-6` |
 

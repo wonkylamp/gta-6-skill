@@ -3,8 +3,8 @@
   "version": "1.2.0",
   "description": "GTA VI launch-day cover: keeps your Mac awake and Slack green, scrolls a fake deploy, drafts your alibi.",
   "author": { "name": "wonkylamp" },
-  "homepage": "https://github.com/wonkylamp/gta-6",
-  "repository": "https://github.com/wonkylamp/gta-6",
+  "homepage": "https://github.com/wonkylamp/gta-6-skill",
+  "repository": "https://github.com/wonkylamp/gta-6-skill",
   "license": "MIT",
   "keywords": ["gta-6", "gta-vi", "joke", "productivity", "mouse-jiggler"]
 }
