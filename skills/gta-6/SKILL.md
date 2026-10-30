@@ -15,7 +15,7 @@ GTA VI is console-only, so the Mac is free to put on a show while the user plays
 ## Argument `stop`
 
 1. Run `pkill -f gta-6/busy.command`. It prints its end-of-shift card, writes `.stats`, turns sleep back on if lid mode turned it off, and its `caffeinate` exits with it.
-2. After a second, read `.stats` (`deploys`, `tests`, `images`, `migrations`, `seconds`) and report it as a GTA mission-complete screen: the numbers, `MISSION PASSED`, `RESPECT +`, and one deadpan line about how productive the day looked from the outside.
+2. After a second, read `.stats` (`deploys`, `tests`, `images`, `migrations`, `seconds`) and report it as a GTA mission-complete screen: the numbers, a wanted level of ☆☆☆☆☆ ("nobody noticed"), `MISSION PASSED`, `RESPECT +`, and one deadpan line about how productive the day looked from the outside.
 
 ## Otherwise
 

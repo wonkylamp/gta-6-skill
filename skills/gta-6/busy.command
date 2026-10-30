@@ -196,13 +196,25 @@ bar() {
   tick
 }
 
+# Pink to gold, from the icon. 256-colour codes, since Terminal.app has no truecolor.
+SUNSET=(198 199 205 204 209 208 214 220)
+sunset() {
+  local i
+  for ((i = 0; i < ${#1}; i++)); do printf '\033[1;38;5;%sm%s' "${SUNSET[i * 8 / ${#1}]}" "${1:i:1}"; done
+  printf '%s' "$N"
+}
+rule() { local c; printf '   '; for c in "${SUNSET[@]}"; do printf '\033[38;5;%sm━━━━' "$c"; done; printf '%s\n' "$N"; }
+
 DEPLOYS=0 TESTS=0 IMAGES=0 MIGRATIONS=0
 end_card() {
   local h=$((SECONDS / 3600)) m=$((SECONDS % 3600 / 60))
-  printf '\n\n   %sEND OF SHIFT%s  %s %s\n\n' "$W" "$N" "$(date +%H:%M)" "$ZONE"
-  printf '   deploys shipped   %s\n   tests passed      %s\n   images pushed     %s\n   migrations run    %s\n   time in Leonida   %dh %02dm\n\n' \
+  printf '\n\n   %sEND OF SHIFT%s  %s %s\n' "$W" "$N" "$(date +%H:%M)" "$ZONE"
+  rule
+  printf '   deploys shipped   %s\n   tests passed      %s\n   images pushed     %s\n   migrations run    %s\n   time in Leonida   %dh %02dm\n' \
     "$DEPLOYS" "$TESTS" "$IMAGES" "$MIGRATIONS" "$h" "$m"
-  printf '   %sMISSION PASSED%s\n   %sRESPECT +%s\n\n' $'\033[1;33m' "$N" "$W" "$N"
+  printf '   wanted level      %s☆☆☆☆☆%s  %snobody noticed%s\n' "$Y" "$N" "$D" "$N"
+  rule
+  printf '\n   %s\n   %sRESPECT +%s\n\n' "$(sunset 'M I S S I O N   P A S S E D')" "$W" "$N"
   [[ -n $LID_SET ]] && sudo -n pmset -a disablesleep 0 2>/dev/null && LID_SET=""
   sleep_disabled && printf '   %sSleep is still disabled. Undo with: sudo pmset -a disablesleep 0%s\n\n' "$Y" "$N"
   printf 'deploys=%s\ntests=%s\nimages=%s\nmigrations=%s\nseconds=%s\n' "$DEPLOYS" "$TESTS" "$IMAGES" "$MIGRATIONS" "$SECONDS" > "$DIR/.stats"
