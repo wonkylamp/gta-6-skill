@@ -8,6 +8,8 @@
 #   GTA6_CLOCK_OUT    HH:MM or "off" (default 17:30)
 #   GTA6_LUNCH        HH:MM-HH:MM or "off" (default 12:30-13:15)
 #   GTA6_PROJECT      repo to borrow service, test and commit names from (read-only)
+#   GTA6_NUDGE        on, off, or auto (default): on unless an employer manages
+#                     this Mac (MDM), since work security software can flag fake input
 #   GTA6_NUDGE_EVERY  seconds between cursor nudges (default 240)
 #   GTA6_FORCE        1 = start even after clock-out time
 #   GTA6_LID          1 = stay awake with the lid closed (asks for your password,
@@ -23,7 +25,7 @@ warn() { echo "${Y}warn: $*${N}"; }
 if [[ -f $DIR/.session ]]; then
   while IFS='=' read -r k v; do
     case $k in
-      GTA6_TZ | GTA6_CLOCK_OUT | GTA6_LUNCH | GTA6_PROJECT | GTA6_NUDGE_EVERY | GTA6_FORCE | GTA6_LID)
+      GTA6_TZ | GTA6_CLOCK_OUT | GTA6_LUNCH | GTA6_PROJECT | GTA6_NUDGE | GTA6_NUDGE_EVERY | GTA6_FORCE | GTA6_LID)
         [[ -z ${!k} ]] && printf -v "$k" '%s' "$v" ;;
     esac
   done < "$DIR/.session"
@@ -68,10 +70,21 @@ fi
 date +%s > "$DIR/.started"
 rm -f "$DIR/.stats"
 caffeinate -dims -w $$ &
-if [[ ! -x $DIR/.jiggle ]] && command -v swiftc >/dev/null; then
-  swiftc -O "$DIR/jiggle.swift" -o "$DIR/.jiggle" 2>/dev/null
+NUDGE=${GTA6_NUDGE:-auto}
+if [[ $NUDGE == auto ]]; then
+  if profiles status -type enrollment 2>/dev/null | grep -q 'MDM enrollment: Yes'; then
+    NUDGE=off
+    warn "an employer manages this Mac, so the cursor nudge is off and Slack will show away (GTA6_NUDGE=on overrides)"
+  else
+    NUDGE=on
+  fi
 fi
-[[ -x $DIR/.jiggle ]] || warn "swiftc not found, cursor nudge is off (fix: xcode-select --install)"
+if [[ $NUDGE == on ]]; then
+  if [[ ! -x $DIR/.jiggle ]] && command -v swiftc >/dev/null; then
+    swiftc -O "$DIR/jiggle.swift" -o "$DIR/.jiggle" 2>/dev/null
+  fi
+  [[ -x $DIR/.jiggle ]] || warn "swiftc not found, cursor nudge is off (fix: xcode-select --install)"
+fi
 
 sleep_disabled() { pmset -g 2>/dev/null | grep -q 'SleepDisabled[[:space:]]*1'; }
 LID_SET=""
@@ -160,7 +173,7 @@ nap() { if [[ $GTA6_DEMO == 1 ]]; then sleep "$(awk "BEGIN { print $1 / 4 }")"; 
 last_nudge=$SECONDS
 tick() {
   if ((SECONDS - last_nudge >= NUDGE_EVERY)); then
-    [[ -x $DIR/.jiggle ]] && "$DIR/.jiggle"
+    [[ $NUDGE == on && -x $DIR/.jiggle ]] && "$DIR/.jiggle"
     last_nudge=$SECONDS
   fi
 }
@@ -270,7 +283,7 @@ image() {
 
 deploy() {
   local svc=$(service) i
-  cmd "kubectl -n prod rollout status deploy/$svc"
+  cmd "kubectl -n staging rollout status deploy/$svc"
   for i in 1 2 3 4 5; do
     say "Waiting for deployment \"$svc\" rollout to finish: $i of 6 updated replicas are available..."
     think
@@ -281,7 +294,7 @@ deploy() {
 
 logs() {
   local svc=$(service) n=$(r 10 20) i
-  cmd "stern -n prod $svc --since 1m"
+  cmd "stern -n staging $svc --since 1m"
   for ((i = 0; i < n; i++)); do
     if chance 8; then
       say "${Y}$svc-$(hex 5)${N} $(date '+%H:%M:%S') ${Y}WARN${N} $(pick "slow query $(r 400 1900)ms" "retrying upstream (attempt 2/3)" "pool at $(r 80 95)% capacity" "upstream slow, wanted_level=$(r 1 3), backing off $(r 2 8)s")"
@@ -331,7 +344,7 @@ lunch() {
 }
 
 trap 'end_card; exit 0' INT TERM HUP
-printf '\033]0;deploy — prod\007'
+printf '\033]0;deploy — staging\007'
 
 [[ $GTA6_DEMO == 1 ]] && for phase in suite deploy image; do "$phase"; done
 while :; do

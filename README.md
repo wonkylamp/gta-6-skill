@@ -25,6 +25,7 @@
 | You, active on Slack all day | Your cursor moving **one pixel** every 4 minutes |
 | You, away at lunch like a normal human | The nudge pauses 12:30–1:15 while the build "waits on review" |
 | You, logging off at 5:30 | An end-of-shift card, then the Mac is allowed to sleep |
+| You, replying "on it" within ten minutes | Canned DMs you send from your phone, mid-heist |
 | A crisp standup update tomorrow | Your agent wrote it while you were in Leonida |
 
 ## Install
@@ -79,6 +80,7 @@ Run it from inside a repo and the fake log borrows that repo's real service, tes
 /gta-6 till 6pm, lunch at 1    # your hours, not ours
 /gta-6 tz America/New_York     # your team's clock, not your couch's
 /gta-6 generic                 # made-up names instead of your repo's
+/gta-6 no nudge                # no fake input at all: logs and alibi only
 /gta-6 lid                     # stay awake with the lid closed (see below)
 /gta-6 stop                    # MISSION PASSED. RESPECT +
 ```
@@ -109,6 +111,7 @@ Keep it plugged in and out of a bag. A closed laptop that can't sleep gets hot.
 | `GTA6_LUNCH` | `12:30-13:15` | `HH:MM-HH:MM`, or `off` |
 | `GTA6_TZ` | your Mac's | any IANA zone, e.g. `Europe/London` |
 | `GTA6_PROJECT` | none | a repo to borrow names from (read-only) |
+| `GTA6_NUDGE` | `auto` | `on`, `off`, or `auto` (off on employer-managed Macs) |
 | `GTA6_NUDGE_EVERY` | `240` | seconds between cursor nudges |
 | `GTA6_LID` | off | `1` for lid mode |
 | `GTA6_FORCE` | off | `1` to start after clock-out time |
@@ -146,8 +149,12 @@ It resets the macOS idle timer (measured: 142s → 0s), which is what the Slack 
 **My team is in another time zone.**
 `/gta-6 tz America/New_York`. Lunch and clock-out follow their clock.
 
-**Is this a good idea?**
-It's a mouse jiggler in a costume. Your company's endpoint software may have opinions about synthetic input. Or book the day off like an adult.
+**Will I get caught?**
+The scrolling terminal is the safe part; it's just text. The cursor nudge is fake input, security software on work laptops can flag it, and people have been fired for mouse jigglers. So if an employer manages your Mac (MDM), the nudge stays off unless you say `/gta-6 nudge`. Slack will show you away, and the status your agent writes makes away look like focus.
+
+The bigger tell is silence. A green dot next to a DM that's three hours old is worse than "away". Keep Slack on your phone, DMs and mentions only, and send the canned replies.
+
+Or book the day off like an adult.
 
 **It says there are 20 days to go.**
 That's the feature. Do real work now so you can afford the special edition.
