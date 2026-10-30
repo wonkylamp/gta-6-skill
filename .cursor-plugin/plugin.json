@@ -1,0 +1,7 @@
+{
+  "name": "gta-6",
+  "version": "1.0.0",
+  "description": "GTA VI launch-day cover: keeps your Mac awake and Slack green, scrolls a fake deploy, drafts your alibi.",
+  "author": { "name": "wonkylamp" },
+  "license": "MIT"
+}

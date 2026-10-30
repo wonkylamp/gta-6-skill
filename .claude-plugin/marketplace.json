@@ -1,0 +1,11 @@
+{
+  "name": "wonkylamp",
+  "owner": { "name": "wonkylamp" },
+  "plugins": [
+    {
+      "name": "gta-6",
+      "source": "./",
+      "description": "GTA VI launch-day cover: keeps your Mac awake and Slack green, scrolls a fake deploy, drafts your alibi."
+    }
+  ]
+}
