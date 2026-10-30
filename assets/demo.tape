@@ -4,13 +4,16 @@ Output assets/demo.gif
 Set Shell bash
 Set FontSize 15
 Set Width 1240
-Set Height 620
+Set Height 700
 Set Padding 24
 Set Theme "Catppuccin Mocha"
 Set WindowBar Colorful
 Set TypingSpeed 40ms
-Set Framerate 20
-Env JIGGLE_EVERY "99999"
+Set Framerate 12
+Env GTA6_NUDGE_EVERY "99999"
+Env GTA6_CLOCK_OUT "off"
+Env GTA6_LUNCH "off"
+Env GTA6_DEMO "1"
 
 Hide
 Type `export PS1='~/work $ '; clear`
@@ -26,6 +29,6 @@ Ctrl+U
 Type "./skills/gta-6/busy.command"
 Sleep 300ms
 Enter
-Sleep 16s
+Sleep 18s
 Ctrl+C
 Sleep 5s

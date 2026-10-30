@@ -1,6 +1,9 @@
 {
   "name": "wonkylamp",
-  "owner": { "name": "wonkylamp" },
+  "owner": {
+    "name": "wonkylamp"
+  },
+  "description": "Joke skills by wonkylamp. Currently: a GTA VI launch-day cover.",
   "plugins": [
     {
       "name": "gta-6",

@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <img src="assets/demo.gif" alt="A terminal scrolling a fake build, test and deploy log, ending in MISSION PASSED, RESPECT +">
+  <img src="assets/demo.gif" alt="A terminal scrolling a fake build, test and deploy log, ending in an end-of-shift card: MISSION PASSED, RESPECT +">
   <br><i>What your manager sees.</i>
 </p>
 
@@ -21,9 +21,10 @@
 
 | Your manager sees | What's actually happening |
 |---|---|
-| Six hours of green deploys | A bash loop printing fake logs with suspicious service names |
+| Eight hours of green deploys | A bash loop printing fake logs, using your repo's real test names |
 | You, active on Slack all day | Your cursor moving **one pixel** every 4 minutes |
-| A Mac that never locks | `caffeinate` |
+| You, away at lunch like a normal human | The nudge pauses 12:30–1:15 while the build "waits on review" |
+| You, logging off at 5:30 | An end-of-shift card, then the Mac is allowed to sleep |
 | A crisp standup update tomorrow | Your agent wrote it while you were in Leonida |
 
 ## Install
@@ -69,43 +70,81 @@ Then copy `~/.gta-6/skills/gta-6` into your agent's skills folder:
 
 ## Usage
 
+Run it from inside a repo and the fake log borrows that repo's real service, test and commit names.
+
 ```
-/gta-6          # before Nov 19: a countdown and a lecture
-/gta-6          # on launch day: the cover goes up
-/gta-6 force    # skip the countdown ("dentist appointment")
-/gta-6 stop     # MISSION PASSED. RESPECT +
+/gta-6                         # before Nov 19: a countdown and a lecture
+/gta-6                         # on launch day: the cover goes up
+/gta-6 force                   # skip the countdown ("dentist appointment")
+/gta-6 till 6pm, lunch at 1    # your hours, not ours
+/gta-6 tz America/New_York     # your team's clock, not your couch's
+/gta-6 generic                 # made-up names instead of your repo's
+/gta-6 lid                     # stay awake with the lid closed (see below)
+/gta-6 stop                    # MISSION PASSED. RESPECT +
 ```
 
 On launch day your agent:
 
-1. Opens a Terminal window that scrolls a convincing build, test and deploy log forever.
+1. Opens a Terminal window that scrolls a convincing build, test and deploy log until clock-out.
 2. Keeps the Mac awake and nudges the cursor 1px every 4 minutes so Slack and Teams show you active.
-3. Drafts a Slack status, a calendar block and tomorrow's standup line. Vague, impressive, unfalsifiable. You paste them; it posts nothing.
+3. Goes quiet at lunch so you show as away, then picks back up.
+4. Clocks out on time with an end-of-shift card: deploys shipped, tests passed, time in Leonida.
+5. Drafts a Slack status, a calendar block and tomorrow's standup line. Vague, impressive, unfalsifiable. You paste them; it posts nothing.
+
+Every time is in your Mac's time zone unless you name another one.
+
+### Lid mode (optional)
+
+`caffeinate` can't stop a MacBook sleeping when the lid closes. Only `sudo pmset -a disablesleep 1` can. With `/gta-6 lid`, the cover window asks for your password, turns sleep off, keeps sudo fresh in that window, and turns sleep back on at clock-out, `/gta-6 stop`, or when you close the window. If anything goes wrong, the end-of-shift card tells you to run `sudo pmset -a disablesleep 0` yourself.
+
+Keep it plugged in and out of a bag. A closed laptop that can't sleep gets hot.
+
+### Running the script directly
+
+`busy.command` works without an agent. Set any of these first:
+
+| Variable | Default | |
+|---|---|---|
+| `GTA6_CLOCK_OUT` | `17:30` | `HH:MM`, or `off` |
+| `GTA6_LUNCH` | `12:30-13:15` | `HH:MM-HH:MM`, or `off` |
+| `GTA6_TZ` | your Mac's | any IANA zone, e.g. `Europe/London` |
+| `GTA6_PROJECT` | none | a repo to borrow names from (read-only) |
+| `GTA6_NUDGE_EVERY` | `240` | seconds between cursor nudges |
+| `GTA6_LID` | off | `1` for lid mode |
+| `GTA6_FORCE` | off | `1` to start after clock-out time |
+| `GTA6_DEMO` | off | `1` to scroll 4x faster, for screen recordings |
+
+```bash
+GTA6_CLOCK_OUT=18:00 GTA6_PROJECT=~/code/app ~/.gta-6/skills/gta-6/busy.command
+```
 
 ## Requirements
 
-- **macOS.** It uses `caffeinate`, Terminal and a 5-line Swift file. On Linux or Windows you still get the alibi; the cover needs a PR.
+- **macOS.** It uses `caffeinate`, `jot`, Terminal and a 5-line Swift file. On Linux or Windows you still get the alibi; the cover needs a PR.
 - **Xcode Command Line Tools** for the cursor nudge (`xcode-select --install`). Without them you get a warning and no nudge.
 - **A PS5 or Xbox Series X|S.** GTA VI is console-only at launch, which is the whole trick: the Mac is free to put on a show.
 
 ## Read the code first
 
-It's ~150 lines of bash and 5 lines of Swift. Read them before you run them, which is good practice for anything you install from a README with jokes in it.
+It's ~340 lines of bash and 5 lines of Swift. Read them before you run them, which is good practice for anything you install from a README with jokes in it.
 
 - [`skills/gta-6/SKILL.md`](skills/gta-6/SKILL.md) is what your agent follows.
-- [`skills/gta-6/busy.command`](skills/gta-6/busy.command) prints the fake logs, ties `caffeinate` to its own PID so it dies with the window, and nudges the cursor every 4 minutes (`JIGGLE_EVERY` to change).
+- [`skills/gta-6/busy.command`](skills/gta-6/busy.command) prints the fake logs, runs the schedule, ties `caffeinate` to its own PID so it dies with the window, and nudges the cursor.
 - [`skills/gta-6/jiggle.swift`](skills/gta-6/jiggle.swift) moves the cursor 1px right, then back.
 
-Nothing touches the network. Close the window or run `/gta-6 stop` and everything is gone.
+Nothing touches the network. Project mode only reads your repo (`git ls-files`, test names, `git log`). Close the window or run `/gta-6 stop` and everything is gone.
 
 ## Easter eggs
 
-There are at least six GTA references hidden in the logs. Coworkers won't find them. Coworkers who are also playing will.
+There are at least six GTA references hidden in the logs, rare enough to survive a full day. Coworkers won't find them. Coworkers who are also playing will.
 
 ## FAQ
 
 **Will this actually keep me green on Slack?**
 It resets the macOS idle timer (measured: 142s → 0s), which is what the Slack and Teams desktop apps go by. We have not measured your manager.
+
+**My team is in another time zone.**
+`/gta-6 tz America/New_York`. Lunch and clock-out follow their clock.
 
 **Is this a good idea?**
 It's a mouse jiggler in a costume. Your company's endpoint software may have opinions about synthetic input. Or book the day off like an adult.
